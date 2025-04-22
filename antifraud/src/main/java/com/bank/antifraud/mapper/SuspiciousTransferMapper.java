@@ -16,15 +16,18 @@ import org.mapstruct.MappingTarget;
 public interface SuspiciousTransferMapper {
     SuspiciousAccountTransferDto toDtoAccountTransfer(SuspiciousAccountTransfer transfer);
     SuspiciousAccountTransfer toEntityAccountTransfer(SuspiciousAccountTransferDto transferDto);
-    void updateAccountTransferFromDTO(SuspiciousAccountTransferDto dto, @MappingTarget SuspiciousAccountTransfer transfer);
+    void updateAccountTransferFromDTO(SuspiciousAccountTransferDto dto,
+                                      @MappingTarget SuspiciousAccountTransfer transfer);
 
     SuspiciousPhoneTransferDto toDtoPhoneTransfer(SuspiciousPhoneTransfer transfer);
     SuspiciousPhoneTransfer toEntityPhoneTransfer(SuspiciousPhoneTransferDto transferDto);
-    void updatePhoneTransferFromDTO(SuspiciousPhoneTransferDto dto, @MappingTarget SuspiciousPhoneTransfer transfer);
+    void updatePhoneTransferFromDTO(SuspiciousPhoneTransferDto dto,
+                                    @MappingTarget SuspiciousPhoneTransfer transfer);
 
     SuspiciousCardTransferDto toDtoCardTransfer(SuspiciousCardTransfer transfer);
     SuspiciousCardTransfer toEntityCardTransfer(SuspiciousCardTransferDto transferDto);
-    void updateCardTransferFromDTO(SuspiciousCardTransferDto dto, @MappingTarget SuspiciousCardTransfer transfer);
+    void updateCardTransferFromDTO(SuspiciousCardTransferDto dto,
+                                   @MappingTarget SuspiciousCardTransfer transfer);
 
 
 
