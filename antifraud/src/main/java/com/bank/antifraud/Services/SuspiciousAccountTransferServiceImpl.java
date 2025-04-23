@@ -24,8 +24,8 @@ import java.util.stream.Collectors;
 public class SuspiciousAccountTransferServiceImpl implements SuspiciousAccountTransferService {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(SuspiciousAccountTransferServiceImpl.class);
-    private SuspiciousTransferMapper mapper;
-    private SuspiciousAccountTransferRepository accountTransferRepository;
+    private final SuspiciousTransferMapper mapper;
+    private final SuspiciousAccountTransferRepository accountTransferRepository;
 
 
     @Override

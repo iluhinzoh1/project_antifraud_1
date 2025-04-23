@@ -25,8 +25,8 @@ import java.util.stream.Collectors;
 public class SuspiciousPhoneTransferServiceImpl implements SuspiciousPhoneTransferService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SuspiciousPhoneTransferServiceImpl.class);
-    private SuspiciousTransferMapper mapper;
-    private SuspiciousPhoneTransferRepository phoneTransferRepository;
+    private final SuspiciousTransferMapper mapper;
+    private final SuspiciousPhoneTransferRepository phoneTransferRepository;
 
 
     @Override

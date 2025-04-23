@@ -23,8 +23,8 @@ import java.util.stream.Collectors;
 public class SuspiciousCardTransferServiceImpl implements SuspiciousCardTransferService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SuspiciousCardTransferServiceImpl.class);
-    private SuspiciousTransferMapper mapper;
-    private SuspiciousCardTransferRepository cardTransferRepository;
+    private final SuspiciousTransferMapper mapper;
+    private final SuspiciousCardTransferRepository cardTransferRepository;
 
 
     @Override
