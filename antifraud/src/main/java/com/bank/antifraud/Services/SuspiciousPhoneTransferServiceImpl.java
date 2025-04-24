@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class SuspiciousPhoneTransferServiceImpl implements SuspiciousPhoneTransferService {
+public class SuspiciousPhoneTransferServiceImpl implements SuspiciousTransferService<SuspiciousPhoneTransferDto> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SuspiciousPhoneTransferServiceImpl.class);
     private final SuspiciousTransferMapper mapper;
@@ -30,7 +30,7 @@ public class SuspiciousPhoneTransferServiceImpl implements SuspiciousPhoneTransf
 
 
     @Override
-    public SuspiciousPhoneTransferDto createPhoneTransfer(SuspiciousPhoneTransferDto dto) {
+    public SuspiciousPhoneTransferDto createTransfer(SuspiciousPhoneTransferDto dto) {
         final SuspiciousPhoneTransfer entity = mapper.toEntityPhoneTransfer(dto);
         final SuspiciousPhoneTransfer saveEntity = phoneTransferRepository.save(entity);
         LOGGER.info("account is created {}", saveEntity);
@@ -38,7 +38,7 @@ public class SuspiciousPhoneTransferServiceImpl implements SuspiciousPhoneTransf
     }
 
     @Override
-    public SuspiciousPhoneTransferDto updatePhoneTransfer(Long id, SuspiciousPhoneTransferDto dto) {
+    public SuspiciousPhoneTransferDto updateTransfer(Long id, SuspiciousPhoneTransferDto dto) {
         final SuspiciousPhoneTransfer entity = phoneTransferRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("transfer with id " + id + " not found"));
         mapper.updatePhoneTransferFromDTO(dto, entity);
@@ -49,7 +49,7 @@ public class SuspiciousPhoneTransferServiceImpl implements SuspiciousPhoneTransf
     }
 
     @Override
-    public void deletePhoneTransfer(Long id) {
+    public void deleteTransfer(Long id) {
         final SuspiciousPhoneTransfer entity = phoneTransferRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("card transfer with id " + id + " not delete"));
         phoneTransferRepository.delete(entity);
@@ -57,14 +57,14 @@ public class SuspiciousPhoneTransferServiceImpl implements SuspiciousPhoneTransf
     }
 
     @Override
-    public List<SuspiciousPhoneTransferDto> getAllPhoneTransfers() {
+    public List<SuspiciousPhoneTransferDto> getAllTransfers() {
         final List<SuspiciousPhoneTransfer> transfer = phoneTransferRepository.findAll();
         LOGGER.info("all account information {}", transfer);
         return transfer.stream().map(mapper::toDtoPhoneTransfer).collect(Collectors.toList());
     }
 
     @Override
-    public SuspiciousPhoneTransferDto getPhoneTransferById(Long id) {
+    public SuspiciousPhoneTransferDto getTransferById(Long id) {
         final SuspiciousPhoneTransfer entity = phoneTransferRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("not found"));
         LOGGER.info("account information {}", entity);

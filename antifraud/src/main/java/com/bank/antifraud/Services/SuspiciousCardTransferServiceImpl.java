@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class SuspiciousCardTransferServiceImpl implements SuspiciousCardTransferService {
+public class SuspiciousCardTransferServiceImpl implements SuspiciousTransferService<SuspiciousCardTransferDto> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SuspiciousCardTransferServiceImpl.class);
     private final SuspiciousTransferMapper mapper;
@@ -28,7 +28,7 @@ public class SuspiciousCardTransferServiceImpl implements SuspiciousCardTransfer
 
 
     @Override
-    public SuspiciousCardTransferDto createCardTransfer(SuspiciousCardTransferDto dto) {
+    public SuspiciousCardTransferDto createTransfer(SuspiciousCardTransferDto dto) {
         final SuspiciousCardTransfer entity = mapper.toEntityCardTransfer(dto);
         final SuspiciousCardTransfer saveEntity = cardTransferRepository.save(entity);
         LOGGER.info("account is created {}", saveEntity);
@@ -36,7 +36,7 @@ public class SuspiciousCardTransferServiceImpl implements SuspiciousCardTransfer
     }
 
     @Override
-    public SuspiciousCardTransferDto updateCardTransfer(Long id, SuspiciousCardTransferDto dto) {
+    public SuspiciousCardTransferDto updateTransfer(Long id, SuspiciousCardTransferDto dto) {
         final SuspiciousCardTransfer entity = cardTransferRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("transfer with id " + id + " not found"));
         mapper.updateCardTransferFromDTO(dto, entity);
@@ -47,7 +47,7 @@ public class SuspiciousCardTransferServiceImpl implements SuspiciousCardTransfer
     }
 
     @Override
-    public void deleteCardTransfer(Long id) {
+    public void deleteTransfer(Long id) {
         final SuspiciousCardTransfer entity = cardTransferRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("card transfer with id " + id + " not delete"));
         cardTransferRepository.delete(entity);
@@ -55,14 +55,14 @@ public class SuspiciousCardTransferServiceImpl implements SuspiciousCardTransfer
     }
 
     @Override
-    public List<SuspiciousCardTransferDto> getAllCardTransfers() {
+    public List<SuspiciousCardTransferDto> getAllTransfers() {
         final List<SuspiciousCardTransfer> transfer = cardTransferRepository.findAll();
         LOGGER.info("all account information {}", transfer);
         return transfer.stream().map(mapper::toDtoCardTransfer).collect(Collectors.toList());
     }
 
     @Override
-    public SuspiciousCardTransferDto getCardTransferById(Long id) {
+    public SuspiciousCardTransferDto getTransferById(Long id) {
         final SuspiciousCardTransfer entity = cardTransferRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("not found"));
         LOGGER.info("account information {}", entity);

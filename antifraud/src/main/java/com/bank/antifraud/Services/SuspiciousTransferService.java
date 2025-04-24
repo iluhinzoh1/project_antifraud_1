@@ -13,7 +13,7 @@ public interface SuspiciousTransferService<T> {
 
     void deleteTransfer(Long id); // НЕ логируется
 
-    List<?> getAllTransfers(); // НЕ логируется
+    List<? extends T> getAllTransfers(); // НЕ логируется
 
     T getTransferById(Long id);
 
