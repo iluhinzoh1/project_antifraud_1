@@ -24,3 +24,5 @@ spring:
     drop-first: ${LIQUIBASE_DROP_FIRST:false}
   application:
     name: anti-fraud-app
+
+

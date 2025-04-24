@@ -21,15 +21,14 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class SuspiciousAccountTransferServiceImpl implements SuspiciousAccountTransferService {
+public class SuspiciousAccountTransferServiceImpl implements SuspiciousTransferService<SuspiciousAccountTransferDto> {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(SuspiciousAccountTransferServiceImpl.class);
     private final SuspiciousTransferMapper mapper;
     private final SuspiciousAccountTransferRepository accountTransferRepository;
 
-
     @Override
-    public SuspiciousAccountTransferDto createAccountTransfer(SuspiciousAccountTransferDto dto) {
+    public SuspiciousAccountTransferDto createTransfer(SuspiciousAccountTransferDto dto) {
         final SuspiciousAccountTransfer entity = mapper.toEntityAccountTransfer(dto);
         final SuspiciousAccountTransfer saveEntity = accountTransferRepository.save(entity);
         LOGGER.info("account is created {}", saveEntity);
@@ -37,7 +36,7 @@ public class SuspiciousAccountTransferServiceImpl implements SuspiciousAccountTr
     }
 
     @Override
-    public SuspiciousAccountTransferDto updateAccountTransfer(Long id, SuspiciousAccountTransferDto dto) {
+    public SuspiciousAccountTransferDto updateTransfer(Long id, SuspiciousAccountTransferDto dto) {
         final SuspiciousAccountTransfer entity = accountTransferRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("transfer with id " +
                         id + " not found"));
@@ -49,7 +48,7 @@ public class SuspiciousAccountTransferServiceImpl implements SuspiciousAccountTr
     }
 
     @Override
-    public void deleteAccountTransfer(Long id) {
+    public void deleteTransfer(Long id) {
         final SuspiciousAccountTransfer entity = accountTransferRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("card transfer with id " + id + " not delete"));
         accountTransferRepository.delete(entity);
@@ -57,14 +56,14 @@ public class SuspiciousAccountTransferServiceImpl implements SuspiciousAccountTr
     }
 
     @Override
-    public List<SuspiciousAccountTransferDto> getAllAccountTransfers() {
+    public List<SuspiciousAccountTransferDto> getAllTransfers() {
         final List<SuspiciousAccountTransfer> transfer = accountTransferRepository.findAll();
         LOGGER.info("all account information {}", transfer);
         return transfer.stream().map(mapper::toDtoAccountTransfer).collect(Collectors.toList());
     }
 
     @Override
-    public SuspiciousAccountTransferDto getAccountTransferById(Long id) {
+    public SuspiciousAccountTransferDto getTransferById(Long id) {
         final SuspiciousAccountTransfer entity = accountTransferRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("not found"));
         LOGGER.info("account information {}", entity);

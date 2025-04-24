@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 
 @ComponentScan("com.bank.antifraud")
 @Configuration
-public class ConfigAudit {
+public class AuditConfig {
 
     @Bean
     public ObjectMapper objectMapper() {
