@@ -1,11 +1,12 @@
 package com.bank.antifraud.Entities;
 
-import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
-import jakarta.persistence.Column;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
+import jakarta.persistence.Column;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,7 +16,7 @@ import lombok.NoArgsConstructor;
  * Сущность для подозрительных переводов по счетам.
  */
 @Entity
-@Table(name = "suspicious_account_transfer", schema = "anti_fraud")
+@Table(name = "suspicious_account_transfers", schema = "anti_fraud")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -33,7 +34,8 @@ public class SuspiciousAccountTransfer {
     @Column(name = "is_suspicious")
     private Boolean isSuspicious;
 
-    @Column(name = "blocked_reason", nullable = false, columnDefinition = "text")
+    @NotNull
+    @Column(name = "blocked_reason", columnDefinition = "text")
     private String blockedReason;
 
     @Column(name = "suspicious_reason", columnDefinition = "text")

@@ -1,6 +1,5 @@
 package com.bank.antifraud.Services;
 
-import com.bank.antifraud.DTO.SuspiciousAccountTransferDto;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

@@ -6,11 +6,13 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Column;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+
 
 import java.time.LocalDateTime;
 
@@ -38,18 +40,21 @@ public class Audit {
     @Column(name = "created_by")
     private String createdBy;
 
-    @Column(name = "modified_by", nullable = false)
+    @NotNull
+    @Column(name = "modified_by")
     private String modifiedBy;
 
     @CreationTimestamp
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
+    @NotNull
     @UpdateTimestamp
-    @Column(name = "modified_at", nullable = false)
+    @Column(name = "modified_at")
     private LocalDateTime modifiedAt;
 
-    @Column(name = "new_entity_json", columnDefinition = "text", nullable = false)
+    @NotNull
+    @Column(name = "new_entity_json", columnDefinition = "text")
     private String newEntityJson;
 
     @Column(name = "entity_json")

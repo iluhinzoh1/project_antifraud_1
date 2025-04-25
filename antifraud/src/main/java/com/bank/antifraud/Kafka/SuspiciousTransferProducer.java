@@ -21,7 +21,7 @@ public class SuspiciousTransferProducer {
         kafkaTemplate.send("suspicious-transfers.delete", payload);
     }
 
-    public void getDelete(String payload) {
+    public void sendGet(String payload) {
         kafkaTemplate.send("suspicious-transfers.get", payload);
     }
 }

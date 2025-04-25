@@ -6,6 +6,7 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Column;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -33,7 +34,8 @@ public class SuspiciousCardTransfer {
     @Column(name = "is_suspicious")
     private Boolean isSuspicious;
 
-    @Column(name = "blocked_reason", nullable = false, columnDefinition = "text")
+    @NotNull
+    @Column(name = "blocked_reason", columnDefinition = "text")
     private String blockedReason;
 
     @Column(name = "suspicious_reason", columnDefinition = "text")
