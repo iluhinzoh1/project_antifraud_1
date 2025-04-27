@@ -1,9 +1,7 @@
 package com.bank.antifraud.AOP;
 
 import com.bank.antifraud.DTO.AuditDto;
-import com.bank.antifraud.DTO.SuspiciousAccountTransferDto;
-import com.bank.antifraud.DTO.SuspiciousCardTransferDto;
-import com.bank.antifraud.DTO.SuspiciousPhoneTransferDto;
+import com.bank.antifraud.Repositories.AuditRepository;
 import com.bank.antifraud.Services.AuditService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -11,10 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Pointcut;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
@@ -24,47 +18,41 @@ import java.time.LocalDateTime;
 @Component
 @RequiredArgsConstructor
 public class AuditAspect {
-    private static final Logger LOGGER = LoggerFactory.getLogger(AuditAspect.class);
     private final AuditService auditService;
     private final ObjectMapper objectMapper;
+    private final AuditRepository repository;
 
-    @Pointcut("execution(* com.bank.antifraud.Services.Suspicious*TransferServiceImpl.update*(..)) || " +
-            "execution(* com.bank.antifraud.Services.Suspicious*TransferServiceImpl.create*(..))")
-    public void auditPointcut() {
+    @AfterReturning(
+            pointcut = "execution(* com.bank.antifraud.Services.*.create*(..)) || " +
+                    "execution(* com.bank.antifraud.Services.*.update*(..))",
+            returning = "result"
+    )
+    public void logAuditEvent(JoinPoint jp, Object result) throws JsonProcessingException {
+        final String operation = jp.getSignature().getName().startsWith("create") ? "CREATE" : "UPDATE";
+        final String currentUser = getCurrentUser();
+        final String entityType = result.getClass().getSimpleName().replace("Dto", "");
+        final AuditDto auditDto = new AuditDto();
+        auditDto.setOperationType(operation);
+        auditDto.setEntityType(entityType);
+        auditDto.setCreatedBy(currentUser);
+        auditDto.setModifiedBy(currentUser);
+        auditDto.setCreatedAt(LocalDateTime.now()); // надо поменять
+        auditDto.setModifiedAt(LocalDateTime.now());
+        auditDto.setNewEntityJson(objectMapper.writeValueAsString(result));
+        auditDto.setEntityJson(objectMapper.writeValueAsString(result));
+        if (operation.startsWith("UP")) {
+            final Long id = (Long) jp.getArgs()[0];
+            final Object oldEntity = getOldEntity(id);
+            auditDto.setEntityJson(objectMapper.writeValueAsString(oldEntity));
+        }
+        auditService.logAudit(auditDto);
     }
 
-    @AfterReturning(value = "auditPointcut()", returning = "result")
-    public void beforeCreateAndUpdate(JoinPoint point, Object result) {
-        try {
-            final String methodName = point.getSignature().getName();
-            final String operationType = methodName.startsWith("create") ? "CREATE" : "UPDATE";
-            final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            final String createdBy = authentication.getName();
-            final String entityType = resolveResult(result);
-            final AuditDto auditDto = new AuditDto();
-            auditDto.setModifiedAt(LocalDateTime.now());
-            auditDto.setModifiedBy(createdBy);
-            auditDto.setNewEntityJson(objectMapper.writeValueAsString(result));
-            auditDto.setCreatedAt(LocalDateTime.now());
-            auditDto.setEntityType(entityType);
-            auditDto.setOperationType(operationType);
-            auditDto.setCreatedBy(createdBy);
-            auditDto.setEntityJson(objectMapper.writeValueAsString(result));
-            auditService.logAudit(auditDto);
-            LOGGER.info("audit success logged:{}", auditDto);
-        } catch (JsonProcessingException e) {
-            LOGGER.error("audit has Exception {}: {}", point.getSignature().getName(), e.getMessage());
-        }
+    private Object getOldEntity(Long id) {
+        return repository.findById(id).orElse(null);
     }
 
-    public String resolveResult(Object entity) {
-        if (entity instanceof SuspiciousCardTransferDto) {
-            return "SuspiciousCardTransfer";
-        } else if (entity instanceof SuspiciousPhoneTransferDto) {
-            return "SuspiciousPhoneTransfer";
-        } else if (entity instanceof SuspiciousAccountTransferDto) {
-            return "SuspiciousAccountTransfer";
-        }
-        return "unknown";
+    public String getCurrentUser() {
+        return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 }
