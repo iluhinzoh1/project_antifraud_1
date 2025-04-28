@@ -9,4 +9,6 @@ import java.util.List;
 public interface AuditService {
     void logAudit(AuditDto auditDto);
     List<AuditDto> getAllAuditLogs();
+    Object findDtoById(String entityType, Long id);
+    AuditDto findLastAudit(String entityType, Long entityId);
 }

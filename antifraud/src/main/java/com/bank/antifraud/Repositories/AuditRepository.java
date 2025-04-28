@@ -9,5 +9,5 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface AuditRepository extends JpaRepository<Audit, Long> {
-
+    Audit findFirstByEntityTypeAndIdOrderByCreatedAtDesc(String entityType, Long entityId);
 }

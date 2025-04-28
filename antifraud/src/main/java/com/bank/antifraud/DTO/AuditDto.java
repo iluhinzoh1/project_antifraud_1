@@ -25,4 +25,5 @@ public class AuditDto {
     private String newEntityJson;
 
     private String entityJson;
+
 }

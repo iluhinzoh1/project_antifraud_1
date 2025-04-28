@@ -21,6 +21,9 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class AuditServiceImpl implements AuditService {
     private final static Logger LOGGER = LoggerFactory.getLogger(AuditServiceImpl.class);
+    private final SuspiciousCardTransferServiceImpl  cardService;
+    private final SuspiciousPhoneTransferServiceImpl phoneService;
+    private final SuspiciousAccountTransferServiceImpl accountService;
     private final AuditRepository auditRepo;
     private final AuditProducer auditProducer;
     private final AuditMapper auditMapper;
@@ -35,10 +38,28 @@ public class AuditServiceImpl implements AuditService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<AuditDto> getAllAuditLogs() {
         final List<Audit> audits = auditRepo.findAll();
         return audits.stream()
                 .map(auditMapper::toDtoAudit)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Object findDtoById(String entityType, Long id) {
+        return switch (entityType) {
+            case "SuspiciousCardTransfer"    -> cardService.getTransferById(id);
+            case "SuspiciousPhoneTransfer"   -> phoneService.getTransferById(id);
+            case "SuspiciousAccountTransfer" -> accountService.getTransferById(id);
+            default -> throw new IllegalArgumentException("Unknown entity type: " + entityType);
+        };
+    }
+
+    @Override
+    public AuditDto findLastAudit(String entityType, Long entityId) {
+        final Audit last = auditRepo
+                .findFirstByEntityTypeAndIdOrderByCreatedAtDesc(entityType, entityId);
+        return auditMapper.toDtoAudit(last);
     }
 }

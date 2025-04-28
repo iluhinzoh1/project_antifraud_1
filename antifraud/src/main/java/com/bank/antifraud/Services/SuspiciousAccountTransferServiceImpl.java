@@ -9,8 +9,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,9 +22,9 @@ import java.util.stream.Collectors;
  */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class SuspiciousAccountTransferServiceImpl implements SuspiciousTransferService<SuspiciousAccountTransferDto> {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(SuspiciousAccountTransferServiceImpl.class);
     private final SuspiciousTransferMapper mapper;
     private final SuspiciousAccountTransferRepository accountTransferRepository;
     private final SuspiciousTransferProducer producer;
@@ -39,7 +38,7 @@ public class SuspiciousAccountTransferServiceImpl implements SuspiciousTransferS
         try {
             final SuspiciousAccountTransferDto result = mapper.toDtoAccountTransfer(saveEntity);
             producer.sendCreate(objectMapper.writeValueAsString(result));
-            LOGGER.info("account is created {}", saveEntity);
+            log.info("account is created {}", saveEntity);
             return mapper.toDtoAccountTransfer(saveEntity);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
@@ -57,7 +56,7 @@ public class SuspiciousAccountTransferServiceImpl implements SuspiciousTransferS
         try {
             final SuspiciousAccountTransferDto result = mapper.toDtoAccountTransfer(saveEntity);
             producer.sendUpdate(objectMapper.writeValueAsString(result));
-            LOGGER.info("account transfer is updated {}", saveEntity);
+            log.info("account transfer is updated {}", saveEntity);
             return mapper.toDtoAccountTransfer(saveEntity);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
@@ -73,7 +72,7 @@ public class SuspiciousAccountTransferServiceImpl implements SuspiciousTransferS
         try {
             final SuspiciousAccountTransferDto result = mapper.toDtoAccountTransfer(entity);
             producer.sendDelete(objectMapper.writeValueAsString(result));
-            LOGGER.info("account transfer is deleted {}", entity);
+            log.info("account transfer is deleted {}", entity);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
@@ -86,12 +85,12 @@ public class SuspiciousAccountTransferServiceImpl implements SuspiciousTransferS
         final List<SuspiciousAccountTransferDto> dtos = transfers.stream()
                 .map(mapper::toDtoAccountTransfer)
                 .collect(Collectors.toList());
-        LOGGER.info("all account transfer DTOs: {}", dtos);
+        log.info("all account transfer DTOs: {}", dtos);
         try {
             final String result = objectMapper.writeValueAsString(dtos);
             producer.sendGet(result);
         } catch (JsonProcessingException e) {
-            LOGGER.error("Failed to serialize DTO list to JSON", e);
+            log.error("Failed to serialize DTO list to JSON", e);
             throw new RuntimeException("Kafka send failed", e);
         }
         return dtos;
@@ -102,7 +101,7 @@ public class SuspiciousAccountTransferServiceImpl implements SuspiciousTransferS
     public SuspiciousAccountTransferDto getTransferById(Long id) {
         final SuspiciousAccountTransfer entity = accountTransferRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("not found"));
-        LOGGER.info("account transfer information {}", entity);
+        log.info("account transfer information {}", entity);
         return mapper.toDtoAccountTransfer(entity);
     }
 }
