@@ -6,8 +6,7 @@ import com.bank.antifraud.Kafka.AuditProducer;
 import com.bank.antifraud.Repositories.AuditRepository;
 import com.bank.antifraud.mapper.AuditMapper;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,8 +18,9 @@ import java.util.stream.Collectors;
  */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AuditServiceImpl implements AuditService {
-    private final static Logger LOGGER = LoggerFactory.getLogger(AuditServiceImpl.class);
+
     private final SuspiciousCardTransferServiceImpl  cardService;
     private final SuspiciousPhoneTransferServiceImpl phoneService;
     private final SuspiciousAccountTransferServiceImpl accountService;
@@ -34,7 +34,7 @@ public class AuditServiceImpl implements AuditService {
         final Audit entity = auditMapper.toEntityAudit(auditDto);
         auditRepo.save(entity);
         auditProducer.sendAuditEvent(auditDto);
-        LOGGER.info("Audit logged: {}", auditDto);
+        log.info("Audit logged: {}", auditDto);
     }
 
     @Override

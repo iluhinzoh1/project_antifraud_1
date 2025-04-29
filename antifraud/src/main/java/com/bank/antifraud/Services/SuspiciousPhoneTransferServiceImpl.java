@@ -9,8 +9,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,8 +23,8 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class SuspiciousPhoneTransferServiceImpl implements SuspiciousTransferService<SuspiciousPhoneTransferDto> {
-    private static final Logger LOGGER = LoggerFactory.getLogger(SuspiciousPhoneTransferServiceImpl.class);
     private final SuspiciousTransferMapper mapper;
     private final SuspiciousPhoneTransferRepository phoneTransferRepository;
     private final SuspiciousTransferProducer producer;
@@ -39,7 +38,7 @@ public class SuspiciousPhoneTransferServiceImpl implements SuspiciousTransferSer
         try {
             final SuspiciousPhoneTransferDto result = mapper.toDtoPhoneTransfer(saveEntity);
             producer.sendCreate(objectMapper.writeValueAsString(result));
-            LOGGER.info("phone account is created {}", saveEntity);
+            log.info("phone account is created {}", saveEntity);
             return mapper.toDtoPhoneTransfer(saveEntity);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
@@ -56,7 +55,7 @@ public class SuspiciousPhoneTransferServiceImpl implements SuspiciousTransferSer
         try {
             final SuspiciousPhoneTransferDto result = mapper.toDtoPhoneTransfer(saveEntity);
             producer.sendUpdate(objectMapper.writeValueAsString(result));
-            LOGGER.info("phone account is updated {}", saveEntity);
+            log.info("phone account is updated {}", saveEntity);
             return mapper.toDtoPhoneTransfer(saveEntity);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
@@ -72,7 +71,7 @@ public class SuspiciousPhoneTransferServiceImpl implements SuspiciousTransferSer
         try {
             final SuspiciousPhoneTransferDto result = mapper.toDtoPhoneTransfer(entity);
             producer.sendDelete(objectMapper.writeValueAsString(result));
-            LOGGER.info("phone account is deleted {}", entity);
+            log.info("phone account is deleted {}", entity);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
@@ -85,12 +84,12 @@ public class SuspiciousPhoneTransferServiceImpl implements SuspiciousTransferSer
         final List<SuspiciousPhoneTransferDto> dtos = transfers.stream()
                 .map(mapper::toDtoPhoneTransfer)
                 .collect(Collectors.toList());
-        LOGGER.info("all phone transfer DTOs: {}", dtos);
+        log.info("all phone transfer DTOs: {}", dtos);
         try {
             final String result = objectMapper.writeValueAsString(dtos);
             producer.sendGet(result);
         } catch (JsonProcessingException e) {
-            LOGGER.error("Failed to serialize DTO list to JSON", e);
+            log.error("Failed to serialize DTO list to JSON", e);
             throw new RuntimeException("Kafka send failed", e);
         }
         return dtos;
@@ -101,7 +100,7 @@ public class SuspiciousPhoneTransferServiceImpl implements SuspiciousTransferSer
     public SuspiciousPhoneTransferDto getTransferById(Long id) {
         final SuspiciousPhoneTransfer entity = phoneTransferRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("not found"));
-        LOGGER.info("phone account information {}", entity);
+        log.info("phone account information {}", entity);
         return mapper.toDtoPhoneTransfer(entity);
     }
 }

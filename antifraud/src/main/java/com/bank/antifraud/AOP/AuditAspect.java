@@ -51,12 +51,12 @@ public class AuditAspect {
         dto.setEntityType(entityType);
         dto.setOperationType(isCreate ? "CREATE" : "UPDATE");
         dto.setNewEntityJson(serialize(result));
+        dto.setModifiedBy(user);
 
         if (isCreate) {
             dto.setEntityJson(dto.getNewEntityJson());
             dto.setCreatedAt(now);
             dto.setCreatedBy(user);
-            dto.setModifiedBy(user);
             dto.setModifiedAt(now);
         } else {
             final AuditDto prev = oldAudit.get();
@@ -64,7 +64,6 @@ public class AuditAspect {
             dto.setEntityJson(prev.getNewEntityJson());
             dto.setCreatedAt(prev.getCreatedAt());
             dto.setCreatedBy(prev.getCreatedBy());
-            dto.setModifiedBy(user);
             dto.setModifiedAt(now);
         }
 

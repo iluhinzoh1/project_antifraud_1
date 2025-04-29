@@ -9,8 +9,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,8 +21,8 @@ import java.util.stream.Collectors;
  */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class SuspiciousCardTransferServiceImpl implements SuspiciousTransferService<SuspiciousCardTransferDto> {
-    private static final Logger LOGGER = LoggerFactory.getLogger(SuspiciousCardTransferServiceImpl.class);
     private final SuspiciousTransferMapper mapper;
     private final SuspiciousCardTransferRepository cardTransferRepository;
     private final SuspiciousTransferProducer producer;
@@ -37,7 +36,7 @@ public class SuspiciousCardTransferServiceImpl implements SuspiciousTransferServ
         try {
             final SuspiciousCardTransferDto result = mapper.toDtoCardTransfer(saveEntity);
             producer.sendCreate(objectMapper.writeValueAsString(result));
-            LOGGER.info("card account is created {}", saveEntity);
+            log.info("card account is created {}", saveEntity);
             return mapper.toDtoCardTransfer(saveEntity);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
@@ -54,7 +53,7 @@ public class SuspiciousCardTransferServiceImpl implements SuspiciousTransferServ
         try {
             final SuspiciousCardTransferDto result = mapper.toDtoCardTransfer(saveEntity);
             producer.sendUpdate(objectMapper.writeValueAsString(result));
-            LOGGER.info("card account is updated {}", saveEntity);
+            log.info("card account is updated {}", saveEntity);
             return mapper.toDtoCardTransfer(saveEntity);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
@@ -70,7 +69,7 @@ public class SuspiciousCardTransferServiceImpl implements SuspiciousTransferServ
         try {
             final SuspiciousCardTransferDto result = mapper.toDtoCardTransfer(entity);
             producer.sendDelete(objectMapper.writeValueAsString(result));
-            LOGGER.info("card account is deleted {}", entity);
+            log.info("card account is deleted {}", entity);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
@@ -83,12 +82,12 @@ public class SuspiciousCardTransferServiceImpl implements SuspiciousTransferServ
         final List<SuspiciousCardTransferDto> dtos = transfers.stream()
                 .map(mapper::toDtoCardTransfer)
                 .collect(Collectors.toList());
-        LOGGER.info("all card transfer DTOs: {}", dtos);
+        log.info("all card transfer DTOs: {}", dtos);
         try {
             final String result = objectMapper.writeValueAsString(dtos);
             producer.sendGet(result);
         } catch (JsonProcessingException e) {
-            LOGGER.error("Failed to serialize DTO list to JSON", e);
+            log.error("Failed to serialize DTO list to JSON", e);
             throw new RuntimeException("Kafka send failed", e);
         }
         return dtos;
@@ -99,7 +98,7 @@ public class SuspiciousCardTransferServiceImpl implements SuspiciousTransferServ
     public SuspiciousCardTransferDto getTransferById(Long id) {
         final SuspiciousCardTransfer entity = cardTransferRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("not found"));
-        LOGGER.info("card account information {}", entity);
+        log.info("card account information {}", entity);
         return mapper.toDtoCardTransfer(entity);
     }
 }
