@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class AuditServiceImpl implements AuditService {
 
-    private final SuspiciousCardTransferServiceImpl  cardService;
+    private final SuspiciousCardTransferServiceImpl cardService;
     private final SuspiciousPhoneTransferServiceImpl phoneService;
     private final SuspiciousAccountTransferServiceImpl accountService;
     private final AuditRepository auditRepo;
@@ -34,7 +34,6 @@ public class AuditServiceImpl implements AuditService {
         final Audit entity = auditMapper.toEntityAudit(auditDto);
         auditRepo.save(entity);
         auditProducer.sendAuditEvent(auditDto);
-        log.info("Audit logged: {}", auditDto);
     }
 
     @Override
@@ -49,8 +48,8 @@ public class AuditServiceImpl implements AuditService {
     @Override
     public Object findDtoById(String entityType, Long id) {
         return switch (entityType) {
-            case "SuspiciousCardTransfer"    -> cardService.getTransferById(id);
-            case "SuspiciousPhoneTransfer"   -> phoneService.getTransferById(id);
+            case "SuspiciousCardTransfer" -> cardService.getTransferById(id);
+            case "SuspiciousPhoneTransfer" -> phoneService.getTransferById(id);
             case "SuspiciousAccountTransfer" -> accountService.getTransferById(id);
             default -> throw new IllegalArgumentException("Unknown entity type: " + entityType);
         };

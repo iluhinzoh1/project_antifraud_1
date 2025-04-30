@@ -53,7 +53,7 @@ public class GlobalExceptionHandler {
             MethodArgumentNotValidException ex,
             HttpServletRequest request) {
 
-        String errorMessage = ex.getBindingResult()
+        final String errorMessage = ex.getBindingResult()
                 .getFieldErrors()
                 .stream()
                 .map(error -> error.getField() + ": " + error.getDefaultMessage())
@@ -88,7 +88,7 @@ public class GlobalExceptionHandler {
             String message,
             HttpServletRequest request) {
 
-        ErrorResponse response = ErrorResponse.builder()
+        final ErrorResponse response = ErrorResponse.builder()
                 .timestamp(LocalDateTime.now())
                 .status(status.value())
                 .error(status.getReasonPhrase())

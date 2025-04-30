@@ -68,11 +68,6 @@ public class AuditAspect {
         }
 
         auditService.logAudit(dto);
-        log.info("Audit {} logged for {}: old={} new={}",
-                dto.getOperationType(),
-                entityType,
-                dto.getEntityJson(),
-                dto.getNewEntityJson());
     }
 
     private String serialize(Object obj) {
