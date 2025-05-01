@@ -14,12 +14,12 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
-// GlobalExceptionHandler.java
+
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
 
-    // Обработка EntityNotFoundException
+
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleEntityNotFound(
             EntityNotFoundException ex,
@@ -33,7 +33,7 @@ public class GlobalExceptionHandler {
         );
     }
 
-    // Обработка ValidationException
+
     @ExceptionHandler(ValidationException.class)
     public ResponseEntity<ErrorResponse> handleValidationException(
             ValidationException ex,
@@ -47,7 +47,7 @@ public class GlobalExceptionHandler {
         );
     }
 
-    // Обработка ошибок валидации Spring (@Valid)
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleValidationErrors(
             MethodArgumentNotValidException ex,
@@ -67,7 +67,7 @@ public class GlobalExceptionHandler {
         );
     }
 
-    // Обработка всех остальных исключений
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleAllExceptions(
             Exception ex,
@@ -81,7 +81,7 @@ public class GlobalExceptionHandler {
         );
     }
 
-    // Формирование ответа
+
     private ResponseEntity<ErrorResponse> buildResponse(
             Exception ex,
             HttpStatus status,

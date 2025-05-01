@@ -12,9 +12,9 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ErrorResponse {
-    private LocalDateTime timestamp;  // Время возникновения ошибки
-    private int status;               // HTTP-статус (404, 400 и т.д.)
-    private String error;             // Название ошибки ("Not Found")
-    private String message;           // Детальное сообщение
-    private String path;             // URL запроса
+    private LocalDateTime timestamp;
+    private int status;
+    private String error;
+    private String message;
+    private String path;
 }
