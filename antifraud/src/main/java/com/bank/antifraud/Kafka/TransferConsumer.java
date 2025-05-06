@@ -45,7 +45,7 @@ public class TransferConsumer {
     }
 
 
-    private Boolean checkSuspicious(BigDecimal transfer) {
+    public Boolean checkSuspicious(BigDecimal transfer) {
         return transfer.compareTo(MAX_ALLOWED_AMOUNT) > 0;
     }
 }
