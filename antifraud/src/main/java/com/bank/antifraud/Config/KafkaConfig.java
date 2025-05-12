@@ -6,6 +6,10 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.List;
 
+/**
+ * Класс для создания новых топиков и партиций
+ */
+
 @Configuration
 public class KafkaConfig {
 
