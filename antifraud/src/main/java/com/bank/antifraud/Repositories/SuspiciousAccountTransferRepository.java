@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 
 
 /**
- * Репозиторий для ....
+ * Репозиторий для подозрительных переводов по аккаунту.
  */
 @Repository
 public interface SuspiciousAccountTransferRepository extends JpaRepository<SuspiciousAccountTransfer, Long> {
