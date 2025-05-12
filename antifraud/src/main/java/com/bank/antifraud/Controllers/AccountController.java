@@ -20,6 +20,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
 
+/**
+ * Класс для отображения контроллеров по аккаунту (плюсом отображение в swagger)
+ */
+
 @RestController
 @RequestMapping("/account-transfer")
 @Tag(name = "переводы по счетам", description = "Управление подозрительными переводами по счетам")
@@ -55,7 +59,7 @@ public class AccountController extends AbstractController<SuspiciousAccountTrans
             @ApiResponse(responseCode = "400", description = "Неверные данные"),
             @ApiResponse(responseCode = "401", description = "Неавторизованный пользователь")
     })
-    @PutMapping
+    @PutMapping("/{id}")
     public ResponseEntity<SuspiciousAccountTransferDto> update(@PathVariable
                                                                Long id, @Valid @RequestBody
                                                                SuspiciousAccountTransferDto dto) {
