@@ -7,6 +7,10 @@ import com.bank.antifraud.mapper.PhoneTransferMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+/**
+ * Класс для преобразования в dto по типу получаемой информации
+ */
+
 @Component
 @RequiredArgsConstructor
 public class SuspiciousDtoFactory {
