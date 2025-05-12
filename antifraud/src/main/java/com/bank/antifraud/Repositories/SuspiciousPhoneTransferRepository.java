@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 
 
 /**
- * Репозиторий для ....
+ * Репозиторий для подозрительных переводов по телефону.
  */
 @Repository
 public interface SuspiciousPhoneTransferRepository extends JpaRepository<SuspiciousPhoneTransfer, Long> {
