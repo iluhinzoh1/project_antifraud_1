@@ -6,6 +6,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
+/**
+ * Класс для отправки подозрительных
+ * данных и аудирования их.
+ */
+
 @Component
 @RequiredArgsConstructor
 @Slf4j
