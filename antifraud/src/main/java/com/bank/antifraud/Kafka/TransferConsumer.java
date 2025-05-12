@@ -15,6 +15,11 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 
+/**
+ * Класс для получения данных
+ * из другого микросервиса transfer и проверки получаемой суммы.
+ */
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
