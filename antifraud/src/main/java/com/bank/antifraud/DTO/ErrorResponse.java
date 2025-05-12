@@ -8,6 +8,10 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+/**
+ * Класс для предоставления информации об ошибке
+ */
+
 @Data
 @Builder
 @AllArgsConstructor
