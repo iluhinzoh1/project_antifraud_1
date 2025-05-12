@@ -4,6 +4,11 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
+/**
+ * Класс для получения подозрительных
+ * данных из SuspiciousTransferProducer.
+ */
+
 @Component
 public class SuspiciousTransferConsumer {
 
