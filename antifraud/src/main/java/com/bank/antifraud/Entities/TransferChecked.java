@@ -6,6 +6,10 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
+/**
+ * Класс для приемки данных из другого микросервиса (transfer)
+ */
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
