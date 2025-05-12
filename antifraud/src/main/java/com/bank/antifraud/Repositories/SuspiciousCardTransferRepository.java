@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 /**
- * Репозиторий для ...
+ * Репозиторий для подозрительных переводов по карте.
  */
 @Repository
 public interface SuspiciousCardTransferRepository extends JpaRepository<SuspiciousCardTransfer, Long> {
