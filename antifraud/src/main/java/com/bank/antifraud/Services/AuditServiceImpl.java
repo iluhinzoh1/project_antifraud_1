@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Сервис для работы с подозрительными переводами.
+ * Сервис для работы с аудитом.
  */
 @Service
 @RequiredArgsConstructor
