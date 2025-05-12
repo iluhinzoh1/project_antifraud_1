@@ -20,6 +20,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
 
+/**
+ * Класс для отображения контроллеров по телефону (плюсом отображение в swagger)
+ */
+
 @RestController
 @RequestMapping("/phone-transfer")
 @Tag(name = "переводы по телефону", description = "Управление подозрительными переводами по номеру")
@@ -55,7 +59,7 @@ public class PhoneController extends AbstractController<SuspiciousPhoneTransferD
             @ApiResponse(responseCode = "400", description = "Неверные данные"),
             @ApiResponse(responseCode = "401", description = "Неавторизованный пользователь")
     })
-    @PutMapping
+    @PutMapping("/{id}")
     public ResponseEntity<SuspiciousPhoneTransferDto> update(@PathVariable
                                                             Long id, @Valid @RequestBody
                                                             SuspiciousPhoneTransferDto dto) {
