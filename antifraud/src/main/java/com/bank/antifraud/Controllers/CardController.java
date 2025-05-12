@@ -20,6 +20,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
 
+
+/**
+ * Класс для отображения контроллеров по карте (плюсом отображение в swagger)
+ */
+
 @RestController
 @RequestMapping("/card-transfer")
 @Tag(name = "переводы по карте", description = "Управление подозрительными переводами по карте")
@@ -55,7 +60,7 @@ public class CardController extends AbstractController<SuspiciousCardTransferDto
             @ApiResponse(responseCode = "400", description = "Неверные данные"),
             @ApiResponse(responseCode = "401", description = "Неавторизованный пользователь")
     })
-    @PutMapping
+    @PutMapping("/{id}")
     public ResponseEntity<SuspiciousCardTransferDto> update(@PathVariable
                                                             Long id, @Valid @RequestBody
                                                             SuspiciousCardTransferDto dto) {
