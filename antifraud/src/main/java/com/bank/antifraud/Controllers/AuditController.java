@@ -12,6 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+/**
+ * Класс для отображения изменения аудита (плюсом отображение в swagger)
+ */
+
 @RestController
 @RequestMapping("/audit")
 @RequiredArgsConstructor
