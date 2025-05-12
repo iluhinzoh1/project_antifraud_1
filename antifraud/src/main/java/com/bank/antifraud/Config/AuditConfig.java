@@ -12,6 +12,11 @@ import java.time.Clock;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+
+/**
+ * Класс для отображения красивого времени в логах
+ */
+
 @ComponentScan("com.bank.antifraud")
 @Configuration
 public class AuditConfig {
