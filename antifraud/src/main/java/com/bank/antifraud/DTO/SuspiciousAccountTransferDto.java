@@ -8,6 +8,9 @@ import lombok.Data;
 @Data
 @Schema(description = "Метаданные подозрительного перевода по счету")
 public class SuspiciousAccountTransferDto {
+    @Schema(description = "ID", example = "123")
+    private Long id;
+
     @Schema(description = "ID перевода по счету", example = "123")
     private Long accountTransferId;
 
