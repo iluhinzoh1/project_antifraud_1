@@ -4,6 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
+/**
+ * Класс для отправки подозрительных
+ * данных из SuspiciousTransferConsumer.
+ */
+
 @Component
 @RequiredArgsConstructor
 public class SuspiciousTransferProducer {
