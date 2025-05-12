@@ -5,13 +5,15 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
-
 /**
  * Передача информации об изменениях.
  */
+
 @Data
 @Schema(description = "Метаданные информации об изменениях")
 public class AuditDto {
+    @Schema(description = "ID", example = "123")
+    private Long id;
 
     @Schema(description = "Название изначально сущности", example = "SuspiciousCardTransfer")
     private String entityType;
