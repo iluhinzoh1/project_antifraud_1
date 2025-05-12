@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
+/**
+ * Класс для обработки исключений и логирования их.
+ */
 
 @RestControllerAdvice
 @Slf4j
