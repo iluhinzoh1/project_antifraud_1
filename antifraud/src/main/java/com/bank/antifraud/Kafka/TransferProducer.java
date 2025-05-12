@@ -6,6 +6,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
+/**
+ * Класс для отправки данных в другие микросервисы.
+ */
+
 @Component
 @Slf4j
 @RequiredArgsConstructor
