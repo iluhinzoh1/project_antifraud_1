@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: anti-fraud-app
+  profiles:
+    active: local
+  kafka:
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        spring.json.date-format: yyyy-MM-dd HH:mm:ss
+    consumer:
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "com.bank.antifraud.DTO"
+        spring.json.value.default.type: "com.bank.antifraud.DTO.AuditDto"
