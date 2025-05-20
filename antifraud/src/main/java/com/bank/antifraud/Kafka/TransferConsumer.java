@@ -31,28 +31,7 @@ public class TransferConsumer {
     private final SuspiciousPhoneTransferServiceImpl phoneService;
     private final SuspiciousDtoFactory factory;
 
-    @KafkaListener(topics = "transfer-events", groupId = "anti-fraud-group")
-    public void handleTransferEvent(TransferChecked transfer) {
-        if (checkSuspicious(transfer.getAmount())) {
-            final Object dto = factory.createDto(transfer, transfer.getTransferType());
 
-            switch (transfer.getTransferType()) {
-                case "ACCOUNT" -> accountService.createTransfer((SuspiciousAccountTransferDto) dto);
-                case "CARD" -> cardService.createTransfer((SuspiciousCardTransferDto) dto);
-                case "PHONE" -> phoneService.createTransfer((SuspiciousPhoneTransferDto) dto);
-                default -> throw new IllegalStateException("Unexpected value: " + transfer.getTransferType());
-            }
-            producer.sendVerdict(transfer.getTransferId(),
-                    "BLOCKED",
-                    "Сумма превышает допустим лимит");
-            log.info("Get verdict: {}", transfer);
-        }
-    }
-
-
-    public Boolean checkSuspicious(BigDecimal transfer) {
-        return transfer.compareTo(MAX_ALLOWED_AMOUNT) > 0;
-    }
 }
 
 
