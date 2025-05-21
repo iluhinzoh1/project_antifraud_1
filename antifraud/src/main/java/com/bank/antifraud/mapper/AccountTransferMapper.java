@@ -22,6 +22,13 @@ public interface AccountTransferMapper extends AbstractMapper<SuspiciousAccountT
     @Mapping(target = "id", ignore = true)
     void updateFromDto(SuspiciousAccountTransferDto dto, @MappingTarget SuspiciousAccountTransfer entity);
 
-    @Override
-    SuspiciousAccountTransferDto eventToDto(TransferChecked event);
+    default SuspiciousAccountTransferDto eventToDto(TransferChecked event) {
+        SuspiciousAccountTransferDto dto = new SuspiciousAccountTransferDto();
+        dto.setAccountTransferId(event.getAccountDetailsId());
+        dto.setIsBlocked(true);
+        dto.setBlockedReason("превышен лимит в 100_000");
+        dto.setIsSuspicious(true);
+        dto.setSuspiciousReason("обнаружено подозрительное поведение"); // или логика
+        return dto;
+    }
 }

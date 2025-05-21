@@ -39,7 +39,6 @@ public class Audit {
     @Column(name = "created_by")
     private String createdBy;
 
-    @NotNull
     @Column(name = "modified_by")
     private String modifiedBy;
 
@@ -47,12 +46,10 @@ public class Audit {
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
-    @NotNull
     @UpdateTimestamp
     @Column(name = "modified_at")
     private LocalDateTime modifiedAt;
 
-    @NotNull
     @Column(name = "new_entity_json", columnDefinition = "text")
     private String newEntityJson;
 

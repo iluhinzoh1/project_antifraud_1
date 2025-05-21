@@ -34,7 +34,6 @@ public class SuspiciousAccountTransfer {
     @Column(name = "is_suspicious")
     private Boolean isSuspicious;
 
-    @NotNull
     @Column(name = "blocked_reason", columnDefinition = "text")
     private String blockedReason;
 

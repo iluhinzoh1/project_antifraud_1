@@ -14,6 +14,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TransferChecked {
+    private Long id;
     private Long number;
     private BigDecimal amount;
     private String purpose;

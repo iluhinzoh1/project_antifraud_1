@@ -20,7 +20,7 @@ public class KafkaConfig {
                 new NewTopic("suspicious-transfers.update", 1, (short) 1),
                 new NewTopic("suspicious-transfers.delete", 1, (short) 1),
                 new NewTopic("suspicious-transfers.get", 1, (short) 1),
-                new NewTopic("audit.events", 1, (short) 1)
+                new NewTopic("audit-events", 1, (short) 1)
         );
     }
 }

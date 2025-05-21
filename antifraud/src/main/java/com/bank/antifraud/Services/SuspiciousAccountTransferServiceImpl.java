@@ -27,4 +27,9 @@ public class SuspiciousAccountTransferServiceImpl extends AbstractSuspiciousTran
                                                 ObjectMapper objectMapper) {
         super(repository, mapper, producer, objectMapper);
     }
+
+    @Override
+    public boolean existsByTransferId(Long accountTransferId) {
+        return repository.existsByAccountTransferId(accountTransferId);
+    }
 }

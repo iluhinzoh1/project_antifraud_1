@@ -28,4 +28,9 @@ public class SuspiciousPhoneTransferServiceImpl extends AbstractSuspiciousTransf
                                               ObjectMapper objectMapper) {
         super(repository, mapper, producer, objectMapper);
     }
+
+    @Override
+    public boolean existsByTransferId(Long transferId) {
+        return repository.existsByPhoneTransferId(transferId);
+    }
 }

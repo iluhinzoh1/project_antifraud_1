@@ -10,6 +10,7 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
@@ -52,7 +53,8 @@ public class AuditAspect {
     )
     public void auditCreateOrUpdate(JoinPoint jp, Object result) {
         final boolean isCreate = jp.getSignature().getName().startsWith("create");
-        final String user = SecurityContextHolder.getContext().getAuthentication().getName();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        final String user = (authentication != null) ? authentication.getName() : "system";
         final LocalDateTime now = LocalDateTime.now(clock);
 
         final AuditDto dto = new AuditDto();

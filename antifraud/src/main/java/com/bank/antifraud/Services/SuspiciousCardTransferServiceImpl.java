@@ -26,5 +26,10 @@ public class SuspiciousCardTransferServiceImpl extends AbstractSuspiciousTransfe
                                              ObjectMapper objectMapper) {
         super(repository, mapper, producer, objectMapper);
     }
+
+    @Override
+    public boolean existsByTransferId(Long transferId) {
+        return repository.existsByCardTransferId(transferId);
+    }
 }
 
