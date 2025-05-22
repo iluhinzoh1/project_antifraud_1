@@ -53,7 +53,7 @@ public class Audit {
     @Column(name = "new_entity_json", columnDefinition = "text")
     private String newEntityJson;
 
-    @Column(name = "entity_json")
+    @Column(name = "entity_json", columnDefinition = "text")
     private String entityJson;
 }
 

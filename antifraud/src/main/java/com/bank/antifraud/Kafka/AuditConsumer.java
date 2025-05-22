@@ -27,6 +27,5 @@ public class AuditConsumer {
         final Audit audit = mapper.toEntityAudit(auditDto.value());
         repository.save(audit);
         log.info("Get AuditDto to AuditConsumer: {}", auditDto);
-
     }
 }

@@ -1,6 +1,7 @@
 package com.bank.antifraud.AOP;
 
 import com.bank.antifraud.DTO.AuditDto;
+import com.bank.antifraud.Enum.OperationType;
 import com.bank.antifraud.Services.AuditService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,54 +27,47 @@ public class AuditAspect {
     private final AuditService auditService;
     private final ObjectMapper objectMapper;
     private final Clock clock;
+    private final AuditContextHolder auditContextHolder;
 
-    /** Хранит предыдущий аудит для update */
-    private final ThreadLocal<AuditDto> oldAudit = new ThreadLocal<>();
+    private static final String CREATE_PREFIX = "create";
+    private static final String GET_ID_METHOD_NAME = "getId";
+    private static final String SYSTEM = "system";
+    private static final String RESULT = "result";
 
-    /** Сохраняем прошлую запись перед update */
     @Before("execution(* com.bank.antifraud.Services.*.update*(Long,..)) && args(id,..)")
     public void captureOldAudit(JoinPoint jp, Long id) {
-        final String entityType = jp.getTarget().getClass()
-                .getSimpleName()
-                .replace("ServiceImpl", "")
-                .replace("Service", "");
-        final AuditDto prev = auditService.findLastAudit(entityType, id);
+        String entityType = AuditUtils.getEntityTypeFromService(jp.getTarget().getClass());
+        AuditDto prev = auditService.findLastAudit(entityType, id);
         prev.setId(id);
-        oldAudit.set(prev);
+        auditContextHolder.setOldAudit(prev);
     }
 
-    /**
-     * После create* или update* сохраняем новый аудит.
-     * result — DTO созданной/обновлённой сущности.
-     */
     @AfterReturning(
             pointcut = "execution(* com.bank.antifraud.Services.*.create*(..)) || " +
-                    "          execution(* com.bank.antifraud.Services.*.update*(..))",
+                    "execution(* com.bank.antifraud.Services.*.update*(..))",
             returning = "result"
     )
     public void auditCreateOrUpdate(JoinPoint jp, Object result) {
-        final boolean isCreate = jp.getSignature().getName().startsWith("create");
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        final String user = (authentication != null) ? authentication.getName() : "system";
-        final LocalDateTime now = LocalDateTime.now(clock);
+        boolean isCreate = jp.getSignature().getName().startsWith(CREATE_PREFIX);
+        String user = getCurrentUser();
+        LocalDateTime now = LocalDateTime.now(clock);
 
-        final AuditDto dto = new AuditDto();
-        dto.setEntityType(result.getClass().getSimpleName().replace("Dto", ""));
-        dto.setOperationType(isCreate ? "CREATE" : "UPDATE");
+        AuditDto dto = new AuditDto();
+        dto.setEntityType(AuditUtils.getEntityType(result.getClass()));
+        dto.setOperationType(String.valueOf(isCreate ? OperationType.CREATE : OperationType.UPDATE));
         dto.setModifiedBy(user);
         dto.setNewEntityJson(serialize(result));
 
         if (isCreate) {
-            final Long id = extractId(result);
+            Long id = extractId(result);
             dto.setId(id);
             dto.setEntityJson(dto.getNewEntityJson());
             dto.setCreatedBy(user);
             dto.setCreatedAt(now);
             dto.setModifiedAt(now);
         } else {
-            final AuditDto prev = oldAudit.get();
-            oldAudit.remove();
-
+            AuditDto prev = auditContextHolder.getOldAudit();
+            auditContextHolder.clear();
             dto.setId(prev.getId());
             dto.setEntityJson(prev.getNewEntityJson());
             dto.setCreatedBy(prev.getCreatedBy());
@@ -96,13 +90,18 @@ public class AuditAspect {
     /** Через рефлексию вызывает getId() на DTO */
     private Long extractId(Object dto) {
         try {
-            final Method m = dto.getClass().getMethod("getId");
+            final Method m = dto.getClass().getMethod(GET_ID_METHOD_NAME);
             final Object id = m.invoke(dto);
             return (id instanceof Long) ? (Long) id : null;
         } catch (Exception e) {
             log.error("Cannot extract id from DTO", e);
             return null;
         }
+    }
+
+    private String getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return (authentication != null) ? authentication.getName() : SYSTEM;
     }
 }
 

@@ -1,5 +1,6 @@
 package com.bank.antifraud.mapper;
 
+import com.bank.antifraud.DTO.SuspiciousAccountTransferDto;
 import com.bank.antifraud.DTO.SuspiciousCardTransferDto;
 import com.bank.antifraud.Entities.SuspiciousCardTransfer;
 import com.bank.antifraud.Entities.TransferChecked;
@@ -19,6 +20,24 @@ public interface CardTransferMapper extends AbstractMapper<SuspiciousCardTransfe
     @Mapping(target = "id", ignore = true)
     void updateFromDto(SuspiciousCardTransferDto dto, @MappingTarget SuspiciousCardTransfer entity);
 
-    SuspiciousCardTransferDto eventToDto(TransferChecked event);
+    default SuspiciousCardTransferDto eventToDto(TransferChecked event) {
+        SuspiciousCardTransferDto dto = new SuspiciousCardTransferDto();
+        dto.setCardTransferId(event.getAccountDetailsId());
+        dto.setIsBlocked(true);
+        dto.setIsSuspicious(true);
+        dto.setBlockedReason("превышен лимит в 100_000");
+        dto.setSuspiciousReason("обнаружено подозрительное поведение"); // или логика
+        return dto;
+    }
+
+    default SuspiciousCardTransferDto updateToDto(TransferChecked event) {
+        SuspiciousCardTransferDto dto = new SuspiciousCardTransferDto();
+        dto.setCardTransferId(event.getAccountDetailsId());
+        dto.setIsBlocked(false);
+        dto.setIsSuspicious(false);
+        dto.setBlockedReason("превышения лимита не обнаружено");
+        dto.setSuspiciousReason("подозрительное поведение не обнаружено");
+        return dto;
+    }
 }
 

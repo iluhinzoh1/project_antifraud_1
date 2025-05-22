@@ -27,4 +27,13 @@ public class SuspiciousDtoFactory {
             default -> throw new IllegalArgumentException("Unknown transfer type: " + transferType);
         };
     }
+
+    public Object updateDto(TransferChecked transfer, String transferType) {
+        return switch (transferType) {
+            case "ACCOUNT" -> accountMapper.updateToDto(transfer);
+            case "CARD" -> cardMapper.updateToDto(transfer);
+            case "PHONE" -> phoneMapper.updateToDto(transfer);
+            default -> throw new IllegalArgumentException("Unknown transfer type: " + transferType);
+        };
+    }
 }

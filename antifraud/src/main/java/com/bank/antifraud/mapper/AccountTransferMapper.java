@@ -26,9 +26,19 @@ public interface AccountTransferMapper extends AbstractMapper<SuspiciousAccountT
         SuspiciousAccountTransferDto dto = new SuspiciousAccountTransferDto();
         dto.setAccountTransferId(event.getAccountDetailsId());
         dto.setIsBlocked(true);
-        dto.setBlockedReason("превышен лимит в 100_000");
         dto.setIsSuspicious(true);
+        dto.setBlockedReason("превышен лимит в 100_000");
         dto.setSuspiciousReason("обнаружено подозрительное поведение"); // или логика
+        return dto;
+    }
+
+    default SuspiciousAccountTransferDto updateToDto(TransferChecked event) {
+        SuspiciousAccountTransferDto dto = new SuspiciousAccountTransferDto();
+        dto.setAccountTransferId(event.getAccountDetailsId());
+        dto.setIsBlocked(false);
+        dto.setIsSuspicious(false);
+        dto.setBlockedReason("превышения лимита не обнаружено");
+        dto.setSuspiciousReason("подозрительное поведение не обнаружено");
         return dto;
     }
 }
