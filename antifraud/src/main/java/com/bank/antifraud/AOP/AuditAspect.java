@@ -19,25 +19,29 @@ import java.lang.reflect.Method;
 import java.time.Clock;
 import java.time.LocalDateTime;
 
+/**
+ * Класс аспект, для перехватки и выставления значений в поля подозрительных запросов
+ */
+
+
 @Aspect
 @Component
 @RequiredArgsConstructor
 @Slf4j
 public class AuditAspect {
+    private static final String CREATE_PREFIX = "create";
+    private static final String GET_ID_METHOD_NAME = "getId";
+    private static final String SYSTEM = "system";
     private final AuditService auditService;
     private final ObjectMapper objectMapper;
     private final Clock clock;
     private final AuditContextHolder auditContextHolder;
 
-    private static final String CREATE_PREFIX = "create";
-    private static final String GET_ID_METHOD_NAME = "getId";
-    private static final String SYSTEM = "system";
-    private static final String RESULT = "result";
 
     @Before("execution(* com.bank.antifraud.Services.*.update*(Long,..)) && args(id,..)")
     public void captureOldAudit(JoinPoint jp, Long id) {
-        String entityType = AuditUtils.getEntityTypeFromService(jp.getTarget().getClass());
-        AuditDto prev = auditService.findLastAudit(entityType, id);
+        final String entityType = AuditUtils.getEntityTypeFromService(jp.getTarget().getClass());
+        final AuditDto prev = auditService.findLastAudit(entityType, id);
         prev.setId(id);
         auditContextHolder.setOldAudit(prev);
     }
@@ -48,25 +52,25 @@ public class AuditAspect {
             returning = "result"
     )
     public void auditCreateOrUpdate(JoinPoint jp, Object result) {
-        boolean isCreate = jp.getSignature().getName().startsWith(CREATE_PREFIX);
-        String user = getCurrentUser();
-        LocalDateTime now = LocalDateTime.now(clock);
+        final boolean isCreate = jp.getSignature().getName().startsWith(CREATE_PREFIX);
+        final String user = getCurrentUser();
+        final LocalDateTime now = LocalDateTime.now(clock);
 
-        AuditDto dto = new AuditDto();
+        final AuditDto dto = new AuditDto();
         dto.setEntityType(AuditUtils.getEntityType(result.getClass()));
         dto.setOperationType(String.valueOf(isCreate ? OperationType.CREATE : OperationType.UPDATE));
         dto.setModifiedBy(user);
         dto.setNewEntityJson(serialize(result));
 
         if (isCreate) {
-            Long id = extractId(result);
+            final Long id = extractId(result);
             dto.setId(id);
             dto.setEntityJson(dto.getNewEntityJson());
             dto.setCreatedBy(user);
             dto.setCreatedAt(now);
             dto.setModifiedAt(now);
         } else {
-            AuditDto prev = auditContextHolder.getOldAudit();
+            final AuditDto prev = auditContextHolder.getOldAudit();
             auditContextHolder.clear();
             dto.setId(prev.getId());
             dto.setEntityJson(prev.getNewEntityJson());
@@ -100,7 +104,7 @@ public class AuditAspect {
     }
 
     private String getCurrentUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return (authentication != null) ? authentication.getName() : SYSTEM;
     }
 }

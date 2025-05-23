@@ -1,6 +1,5 @@
 package com.bank.antifraud.mapper;
 
-import com.bank.antifraud.DTO.SuspiciousAccountTransferDto;
 import com.bank.antifraud.DTO.SuspiciousCardTransferDto;
 import com.bank.antifraud.DTO.SuspiciousPhoneTransferDto;
 import com.bank.antifraud.Entities.SuspiciousPhoneTransfer;
@@ -9,6 +8,9 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.ReportingPolicy;
+
+/** Маппер для преобразования в dto или entity,
+ * а так же для преобразования поступающих топиков в подозрительные либо чистые запросы */
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface PhoneTransferMapper extends AbstractMapper<SuspiciousPhoneTransferDto, SuspiciousPhoneTransfer> {
@@ -22,7 +24,7 @@ public interface PhoneTransferMapper extends AbstractMapper<SuspiciousPhoneTrans
     void updateFromDto(SuspiciousPhoneTransferDto dto, @MappingTarget SuspiciousPhoneTransfer entity);
 
     default SuspiciousPhoneTransferDto eventToDto(TransferChecked event) {
-        SuspiciousPhoneTransferDto dto = new SuspiciousPhoneTransferDto();
+        final SuspiciousPhoneTransferDto dto = new SuspiciousPhoneTransferDto();
         dto.setPhoneTransferId(event.getAccountDetailsId());
         dto.setIsBlocked(true);
         dto.setIsSuspicious(true);
@@ -32,7 +34,17 @@ public interface PhoneTransferMapper extends AbstractMapper<SuspiciousPhoneTrans
     }
 
     default SuspiciousPhoneTransferDto updateToDto(TransferChecked event) {
-        SuspiciousPhoneTransferDto dto = new SuspiciousPhoneTransferDto();
+        final SuspiciousPhoneTransferDto dto = new SuspiciousPhoneTransferDto();
+        dto.setPhoneTransferId(event.getAccountDetailsId());
+        dto.setIsBlocked(false);
+        dto.setIsSuspicious(false);
+        dto.setBlockedReason("превышения лимита не обнаружено");
+        dto.setSuspiciousReason("подозрительное поведение не обнаружено");
+        return dto;
+    }
+
+    default SuspiciousPhoneTransferDto eventCleanToDto(TransferChecked event) {
+        final SuspiciousPhoneTransferDto dto = new SuspiciousPhoneTransferDto();
         dto.setPhoneTransferId(event.getAccountDetailsId());
         dto.setIsBlocked(false);
         dto.setIsSuspicious(false);

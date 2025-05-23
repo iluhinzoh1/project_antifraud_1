@@ -9,6 +9,10 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.ReportingPolicy;
 
+/** Маппер для преобразования в dto или entity,
+ * а так же для преобразования поступающих топиков в подозрительные либо чистые запросы */
+
+
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface CardTransferMapper extends AbstractMapper<SuspiciousCardTransferDto, SuspiciousCardTransfer> {
     @Mapping(source = "id", target = "id")
@@ -21,7 +25,7 @@ public interface CardTransferMapper extends AbstractMapper<SuspiciousCardTransfe
     void updateFromDto(SuspiciousCardTransferDto dto, @MappingTarget SuspiciousCardTransfer entity);
 
     default SuspiciousCardTransferDto eventToDto(TransferChecked event) {
-        SuspiciousCardTransferDto dto = new SuspiciousCardTransferDto();
+        final SuspiciousCardTransferDto dto = new SuspiciousCardTransferDto();
         dto.setCardTransferId(event.getAccountDetailsId());
         dto.setIsBlocked(true);
         dto.setIsSuspicious(true);
@@ -31,7 +35,17 @@ public interface CardTransferMapper extends AbstractMapper<SuspiciousCardTransfe
     }
 
     default SuspiciousCardTransferDto updateToDto(TransferChecked event) {
-        SuspiciousCardTransferDto dto = new SuspiciousCardTransferDto();
+        final SuspiciousCardTransferDto dto = new SuspiciousCardTransferDto();
+        dto.setCardTransferId(event.getAccountDetailsId());
+        dto.setIsBlocked(false);
+        dto.setIsSuspicious(false);
+        dto.setBlockedReason("превышения лимита не обнаружено");
+        dto.setSuspiciousReason("подозрительное поведение не обнаружено");
+        return dto;
+    }
+
+    default SuspiciousCardTransferDto eventCleanToDto(TransferChecked event) {
+        final SuspiciousCardTransferDto dto = new SuspiciousCardTransferDto();
         dto.setCardTransferId(event.getAccountDetailsId());
         dto.setIsBlocked(false);
         dto.setIsSuspicious(false);
